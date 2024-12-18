@@ -10,10 +10,9 @@ from random import randint
 pygame.init()
 
 #informacoes dos textos que serao inseridos no jogo
-fonte = pygame.font.SysFont('arial', 55, True, False)
+fonte = pygame.font.SysFont('arial', 30, True, False)
 fonte2 = pygame.font.SysFont('arial', 100, True, False)
 
-#variaveis
 pontos = 0
 
 #parametros para o tamanho da tela
@@ -21,7 +20,7 @@ largura = 1280
 altura = 720
 escala = 2
 tempo = pygame.time.Clock()
-FPS = 120
+FPS = 60
 
 #posicao do bloco do jogador
 x = largura/2
@@ -50,7 +49,7 @@ damage = 1
 aceleracao = 0
 vel=5
 comido=False
-var = 30
+var = 20
 musica2 = "sounds/fundo2.mp3"
 musica = "sounds/fundo.mp3"
 tela = pygame.display.set_mode((largura,altura))
@@ -71,7 +70,7 @@ while True:
 	
 	#frames por segundo da animação
 	tempo.tick(FPS)
-	
+	aceleracao=10
 	#limpa a tela quando os objetos se movem
 	tela.fill((rf,gf,bf))
 	
@@ -155,14 +154,14 @@ while True:
 		nivel=nivel+1
 		pontos = 0
 		pygame.mixer.music.stop()
-		pygame.mixer.music.load("sounds/fundo3.mp3")
+		pygame.mixer.music.load("sounds/fundo2.mp3")
 		pygame.mixer.music.play(-1)
 		pygame.mixer.music.set_volume(0.2)
 		
 	if pontos>=20 and nivel ==1:
 		nivel = nivel+1
 		pygame.mixer.music.stop()
-		pygame.mixer.music.load("sounds/fundo2.mp3")
+		pygame.mixer.music.load("sounds/fundo3.mp3")
 		pygame.mixer.music.play(-1)
 		pygame.mixer.music.set_volume(0.3)
 		
@@ -185,15 +184,15 @@ while True:
 			dano = pygame.mixer.Sound("sounds/damage.wav")
 			dano.play()
 			dano.set_volume(0.6)
-			
+
 		if RECT_inimigo2.colliderect(linha):
-			RY2=RY2-80
-		if RX2 >=largura:
-			RX2=RX2-90
-		if RX2 <=0:
-			RX2=RX2+90
-		if RY2<=0:
-			RY2=RY2+80
+			RX2 = RX2 - 90
+		if RY2 >= altura - 90:
+			RY2 = RY2 - 90
+		if RX2 <= 0:
+			RX2 = RX2 + 90
+		if RY2 <= 0:
+			RY2 = RY2 + 90
 			
 	#nova fase
 	if nivel >=2:
@@ -208,15 +207,15 @@ while True:
 			dano = pygame.mixer.Sound("sounds/damage.wav")
 			dano.play()
 			dano.set_volume(0.6)
-		
+
 		if RECT_inimigo3.colliderect(linha):
-			RY3=RY3-100
-		if RX3 >=largura:
-			RX3=RX3-100
-		if RX2 <=0:
-			RX3=RX3+100
-		if RY3<=0:
-			RY3=RY3+100
+			RX3 = RX3 - 90
+		if RY3 >= altura - 90:
+			RY3 = RY3 - 90
+		if RX3 <= 0:
+			RX3 = RX3 + 90
+		if RY3 <= 0:
+			RY3 = RY3 + 90
 
 # condicao para que a tela de game over seja aberta
 	if pontos < 0:
@@ -279,42 +278,54 @@ while True:
 	
 			if direita.collidepoint(event.pos):
 				x=x+aceleracao
-				aceleracao=20
 				
 					
 			if esquerda.collidepoint(event.pos):
 				x=x-aceleracao
-				aceleracao=20
 				
 				
 			if cima.collidepoint(event.pos):
 				y=y-aceleracao
-				aceleracao=20
 				
 			
 			if baixo.collidepoint(event.pos):
 				y=y+aceleracao
-				aceleracao=20
 
 
 	#TECLADO
-		if event.type == pygame.KEYDOWN:
+		'''if event.type == pygame.KEYDOWN:
 
 			if event.key == K_d or event.key == K_RIGHT:
-				x = x + aceleracao
-				aceleracao = 20
+				KD = True
+				KA,KW,KS = False, False, False
+				while KD:
+					x = x + aceleracao
 
 			if event.key == K_a or event.key == K_LEFT:
-				x = x - aceleracao
-				aceleracao = 20
+				KA = True
+				KD,KW,KS = False, False, False
+				while KA:
+					x = x - aceleracao
 
 			if event.key == K_w or event.key == K_UP:
-				y = y - aceleracao
-				aceleracao = 20
+				KW = True
+				KA,KD,KS = False, False, False
+				while KW:
+					y = y - aceleracao
 
 			if event.key == K_s or event.key == K_DOWN:
-				y = y + aceleracao
-				aceleracao = 20
+			KS = True
+				KA,KW,KS = False, False, False
+				while KS:
+					y = y + aceleracao'''
+		if pygame.key.get_pressed()[K_d]:
+			x = x + aceleracao
+		if pygame.key.get_pressed()[K_a]:
+			x = x - aceleracao
+		if pygame.key.get_pressed()[K_w]:
+			y = y - aceleracao
+		if pygame.key.get_pressed()[K_s]:
+			y = y + aceleracao
 
 
 
@@ -325,22 +336,22 @@ while True:
 	
 	#para impedir que o bloco do jogador ultrapasse a tela do jogo
 	if x < 0:
-		x=x+20
-	if x > largura+40:
-		x=x-20
+		x=x+32
 	if y < 0:
-		y=y+20
+		y=y+32
+	if y >= altura-32:
+		y=y-20
 	
 		
 	#para impedir que o bloco inimigo ultrapasse a tela do jogo
 	if RECT_inimigo.colliderect(linha):
-		RY=RY-80
-	if RX >=largura:
 		RX=RX-90
+	if RY >=altura-90:
+		RY=RY-90
 	if RX <=0:
 		RX=RX+90
 	if RY<=0:
-		RY=RY+80
+		RY=RY+90
 		
 	#O inimigo começa a se movimentar assim que voce come a primeira maçã
 	if comido == True:
