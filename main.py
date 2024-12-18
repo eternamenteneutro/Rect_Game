@@ -18,9 +18,9 @@ fonte2 = pygame.font.SysFont('arial', 100, True, False)
 pontos = 0
 
 #parametros para o tamanho da tela
-largura = 1000
-altura = 2000
-
+largura = 1280
+altura = 720
+escala = 2
 tempo = pygame.time.Clock()
 FPS = 18
 
@@ -33,6 +33,7 @@ r,g,b = 25,100,70
 yelo = 255
 txt_r,txt_g,txt_b = 255,000,255
 
+#coordenadas dos elementos
 tx, ty = 40, 40
 rx, ry = randint(10,800), randint(10,1200)
 
@@ -66,6 +67,7 @@ pygame.mixer.music.load(musica)
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(0.2)
 
+######################################################################
 while True:
 	
 	#frames por segundo da animação
@@ -77,7 +79,9 @@ while True:
 	#mensagem que sera exibida na tela
 	msg = f'pontos: {pontos}'
 	texto_form = fonte.render(msg, True, (txt_r,txt_g,txt_b))
-	
+
+	##############################################################
+
 	#definindo os controles de movimentacao do bloco verde
 	ct_up = f'A'
 	control_up = fonte.render(ct_up, False, (255,255,0))
@@ -106,23 +110,25 @@ while True:
 	rect_maca = pygame.draw.rect(tela, (255,0,0), (rx,ry,40,40))
 
 	RECT_inimigo = pygame.draw. rect(tela, (0, 50, 200), (RX,RY, inmg_largura,inmg_altura))
-	
-	#eventos se voce cruza a linha
+
+##############################################################################
+
+	#voce cruza a linha
 	if rect_voce.colliderect(linha):
 		y = y-8
 		
-	#eventos se voce comer a maçã
+	#voce come a maçã
 	if rect_voce.colliderect(rect_maca):
 		rx = randint(10,980)
 		ry = randint(10,1380)
 		pontos=pontos + 1
 		aceleracao=aceleracao+2
 		comido = True
-		som = pygame.mixer.Sound("sounds/notificação do zap.ogg")
+		som = pygame.mixer.Sound("sounds/not_zap.ogg")
 		som.play()
 		som.set_volume(0.1)
 		
-	#eventos se voce encostar no inimigo
+	#voce encosta no inimigo
 	if rect_voce.colliderect(RECT_inimigo):
 		pontos = pontos -damage
 		RX=randint(10,750)
@@ -131,7 +137,7 @@ while True:
 		dano.play()
 		dano.set_volume(0.6)
 	
-		
+#############################################################################
 	#fases
 	if pontos ==-365:
 		pygame.mixer.music.stop()
@@ -212,8 +218,17 @@ while True:
 			RX3=RX3+100
 		if RY3<=0:
 			RY3=RY3+100
-					
-					
+
+# condicao para que a tela de game over seja aberta
+	if pontos < 0:
+		gameover = pygame.mixer.music
+		gameover.load("sounds/gameoversound.mp3")
+		gameover.play(1)
+		gameover.set_volume(0.5)
+		pontos = -1000
+		nivel = -1
+
+###############################################################################
 					
 	#tela de game win
 	if nivel ==3:
@@ -244,28 +259,20 @@ while True:
 		tela.blit(texto_formato, (largura/2 - 300,altura/2 -150))
 		tela.blit(texto_reinit, (largura/2 -300, altura/2))
 		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				if event.key == K_a:
+					nivel = 0
+					pontos = 0
+
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if cima.collidepoint(event.pos):
 					nivel = 0
-					pontos =-365
+					pontos =0
 
-
-#condicao para que a tela de game over seja aberta
-	if pontos<0 and pontos >-300:
-		gameover=pygame.mixer.music
-		gameover.load("sounds/gameoversound.mp3")
-		gameover.play(1)
-		gameover.set_volume(0.5)
-		pontos = -1000
-		nivel = -1
-	
-	
 		
-		
+	#Controls movement
 	for event in pygame.event.get():
-    
-    
-	#movimento dos controles
+	#CLIQUES
 		if event.type == pygame.MOUSEBUTTONDOWN:
 	
 			if direita.collidepoint(event.pos):
@@ -286,7 +293,29 @@ while True:
 			if baixo.collidepoint(event.pos):
 				y=y+aceleracao
 				aceleracao=20
-				
+
+
+	#TECLADO
+		if event.type == pygame.KEYDOWN:
+
+			if event.key == K_d or event.key == K_RIGHT:
+				x = x + aceleracao
+				aceleracao = 20
+
+			if event.key == K_a or event.key == K_LEFT:
+				x = x - aceleracao
+				aceleracao = 20
+
+			if event.key == K_w or event.key == K_UP:
+				y = y - aceleracao
+				aceleracao = 20
+
+			if event.key == K_s or event.key == K_DOWN:
+				y = y + aceleracao
+				aceleracao = 20
+
+
+
 	if ry>= 1360:
 		ry = 0
 		RX, RY = RX+randint(-20,20), RY+randint(-40,50)
@@ -317,15 +346,12 @@ while True:
 		RY = RY+randint(-var,var)
 		
 		
-#mostra os objetos na tela
+	#mostra os objetos na tela
 	tela.blit(control_up, (580,1570))
 	tela.blit(control_right, (735,1720))
 	tela.blit(control_down, (580,1875))
 	tela.blit(control_left, (435,1725))
-	
 	tela.blit(texto_form, (740,60))
-	
-	#atualiza a a tela a cada interação do while
 	pygame.display.flip()
 	
 	
