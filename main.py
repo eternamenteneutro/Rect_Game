@@ -1,5 +1,3 @@
-#Dupla: Daniel e Mariana, 1.18.1M
-
 #"Rect" game (adaptação do jogo da cobrinha)
 #dimensoes feitas para formato de celular e não de computador:)
 
@@ -53,8 +51,8 @@ aceleracao = 0
 vel=5
 comido=False
 var = 30
-musica2 = "fundo2.mp3"
-musica = "fundo.mp3"
+musica2 = "sounds/fundo2.mp3"
+musica = "sounds/fundo.mp3"
 tela = pygame.display.set_mode((largura,altura))
 
 width = tela.get_width()
@@ -120,7 +118,7 @@ while True:
 		pontos=pontos + 1
 		aceleracao=aceleracao+2
 		comido = True
-		som = pygame.mixer.Sound("notificação do zap.ogg")
+		som = pygame.mixer.Sound("sounds/notificação do zap.ogg")
 		som.play()
 		som.set_volume(0.1)
 		
@@ -129,7 +127,7 @@ while True:
 		pontos = pontos -damage
 		RX=randint(10,750)
 		RY=randint(10,1250)
-		dano = pygame.mixer.Sound("damage.wav")
+		dano = pygame.mixer.Sound("sounds/damage.wav")
 		dano.play()
 		dano.set_volume(0.6)
 	
@@ -152,14 +150,14 @@ while True:
 		nivel=nivel+1
 		pontos = 0
 		pygame.mixer.music.stop()
-		pygame.mixer.music.load("fundo3.mp3")
+		pygame.mixer.music.load("sounds/fundo3.mp3")
 		pygame.mixer.music.play(-1)
 		pygame.mixer.music.set_volume(0.2)
 		
 	if pontos>=20 and nivel ==1:
 		nivel = nivel+1
 		pygame.mixer.music.stop()
-		pygame.mixer.music.load("fundo2.mp3")
+		pygame.mixer.music.load("sounds/fundo2.mp3")
 		pygame.mixer.music.play(-1)
 		pygame.mixer.music.set_volume(0.3)
 		
@@ -179,7 +177,7 @@ while True:
 			pontos = pontos -damage
 			RX2=randint(10,750)
 			RY2=randint(10,1250)
-			dano = pygame.mixer.Sound("damage.wav")
+			dano = pygame.mixer.Sound("sounds/damage.wav")
 			dano.play()
 			dano.set_volume(0.6)
 			
@@ -202,7 +200,7 @@ while True:
 		if rect_voce.colliderect(RECT_inimigo3):
 			RX3,RY3 = randint(0,950), randint(0,1380)
 			pontos = pontos -damage
-			dano = pygame.mixer.Sound("damage.wav")
+			dano = pygame.mixer.Sound("sounds/damage.wav")
 			dano.play()
 			dano.set_volume(0.6)
 		
@@ -220,7 +218,7 @@ while True:
 	#tela de game win
 	if nivel ==3:
 		rd,re,rc,rb,rl = 0,0,0,0,0
-		som_gamewin=pygame.mixer.Sound("gamewin.ogg")
+		som_gamewin=pygame.mixer.Sound("sounds/gamewin.ogg")
 		som_gamewin.play()
 		som_gamewin.set_volume(0.8)
 		x,y,rx,ry,RX,RY,RX2,RY2 = 0,0,900,0,900,900,0,900
@@ -255,7 +253,7 @@ while True:
 #condicao para que a tela de game over seja aberta
 	if pontos<0 and pontos >-300:
 		gameover=pygame.mixer.music
-		gameover.load("gameoversound.mp3")
+		gameover.load("sounds/gameoversound.mp3")
 		gameover.play(1)
 		gameover.set_volume(0.5)
 		pontos = -1000
