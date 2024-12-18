@@ -5,7 +5,6 @@
 import pygame
 from pygame.locals import *
 from sys import exit
-import random
 from random import randint
 
 pygame.init()
@@ -22,7 +21,7 @@ largura = 1280
 altura = 720
 escala = 2
 tempo = pygame.time.Clock()
-FPS = 18
+FPS = 120
 
 #posicao do bloco do jogador
 x = largura/2
@@ -35,13 +34,13 @@ txt_r,txt_g,txt_b = 255,000,255
 
 #coordenadas dos elementos
 tx, ty = 40, 40
-rx, ry = randint(10,800), randint(10,1200)
+rx, ry = randint(10,1000), randint(10,600)
 
 dez=10
-RX, RY = randint(0,1000), randint(0,1395)
-inmg_largura, inmg_altura = 80, 90
-RX2, RY2 = randint(0,1000), randint(0,1395)
-RX3,RY3 = randint(0,900), randint(0,1395)
+RX, RY = randint(0,1000), randint(0,600)
+inmg_largura, inmg_altura = 64, 72
+RX2, RY2 = randint(0,1000), randint(0,600)
+RX3,RY3 = randint(0,900), randint(0,600)
 rd, re, rc, rb=0, 0, 0, 0
 rf, gf, bf, rl = 255,255,255, 0
 
@@ -102,12 +101,12 @@ while True:
 	
 	
 	#linha que separa a tela dos objetos com a tela dos controles
-	linha= pygame.draw.line(tela, (rl,0,0), (-20,1400), (1200,1400), 5)
+	linha= pygame.draw.line(tela, (rl,0,0), (1000,-40), (1000,750), 5)
 	
 	#criando os nossos atores no jogo(voce, a maçã e o inimigo)
 	rect_voce = pygame.draw.rect(tela, (r,g,b), (x,y,tx,ty))
 	
-	rect_maca = pygame.draw.rect(tela, (255,0,0), (rx,ry,40,40))
+	rect_maca = pygame.draw.rect(tela, (255,0,0), (rx,ry,32,32))
 
 	RECT_inimigo = pygame.draw. rect(tela, (0, 50, 200), (RX,RY, inmg_largura,inmg_altura))
 
@@ -115,12 +114,12 @@ while True:
 
 	#voce cruza a linha
 	if rect_voce.colliderect(linha):
-		y = y-8
+		x = x - 5
 		
 	#voce come a maçã
 	if rect_voce.colliderect(rect_maca):
-		rx = randint(10,980)
-		ry = randint(10,1380)
+		rx = randint(10,978)
+		ry = randint(10,600)
 		pontos=pontos + 1
 		aceleracao=aceleracao+2
 		comido = True
@@ -131,15 +130,15 @@ while True:
 	#voce encosta no inimigo
 	if rect_voce.colliderect(RECT_inimigo):
 		pontos = pontos -damage
-		RX=randint(10,750)
-		RY=randint(10,1250)
+		RX=randint(10,970)
+		RY=randint(10,640)
 		dano = pygame.mixer.Sound("sounds/damage.wav")
 		dano.play()
-		dano.set_volume(0.6)
+		dano.set_volume(0.8)
 	
 #############################################################################
 	#fases
-	if pontos ==-365:
+	if pontos <-300:
 		pygame.mixer.music.stop()
 		pygame.mixer.music.load(musica)
 		pygame.mixer.music.play(-1)
@@ -149,7 +148,7 @@ while True:
 		rf,gf,bf = 255, 255, 255
 		yelo = 255
 		txt_r,txt_g,txt_b =255,0,255
-		
+		#gameoversound
 		
 		
 	if pontos>=10 and nivel ==0:
@@ -221,11 +220,7 @@ while True:
 
 # condicao para que a tela de game over seja aberta
 	if pontos < 0:
-		gameover = pygame.mixer.music
-		gameover.load("sounds/gameoversound.mp3")
-		gameover.play(1)
-		gameover.set_volume(0.5)
-		pontos = -1000
+		pontos = -301
 		nivel = -1
 
 ###############################################################################
@@ -246,6 +241,10 @@ while True:
 		tela.blit(texto_sgw, (largura/2-300, altura/2-150))
 	#tela de game over
 	if nivel ==-1:
+		gameover = pygame.mixer.music
+		gameover.load("sounds/gameoversound.mp3")
+		gameover.play()
+		gameover.set_volume(1)
 		x,y,rx,ry,RX,RY,RX2,RY2 = 0,0,900,0,900,900,0,900
 		rf,gf,bf = 0,0,0
 		txt_r,txt_g,txt_b = 0,0,0
@@ -258,11 +257,14 @@ while True:
 		texto_formato = fonte2.render(go, True, (255,0,0))
 		tela.blit(texto_formato, (largura/2 - 300,altura/2 -150))
 		tela.blit(texto_reinit, (largura/2 -300, altura/2))
+		
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
 				if event.key == K_a:
 					nivel = 0
 					pontos = 0
+					pygame.mixer.music.load(musica)
+					pygame.mixer.music.play(-1)
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if cima.collidepoint(event.pos):
