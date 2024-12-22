@@ -43,7 +43,7 @@ RX3,RY3 = randint(0,900), randint(0,600)
 rd, re, rc, rb=0, 0, 0, 0
 rf, gf, bf, rl = 255,255,255, 0
 
-tocado = False
+pressD, pressA, pressW, pressS = False, False, False, False
 nivel = 0
 damage = 1
 aceleracao = 0
@@ -70,7 +70,7 @@ while True:
 	
 	#frames por segundo da animação
 	tempo.tick(FPS)
-	aceleracao=10
+	aceleracao=5
 	#limpa a tela quando os objetos se movem
 	tela.fill((rf,gf,bf))
 	
@@ -319,16 +319,31 @@ while True:
 				while KS:
 					y = y + aceleracao'''
 		if pygame.key.get_pressed()[K_d]:
-			x = x + aceleracao
+			pressD = True
+
 		if pygame.key.get_pressed()[K_a]:
-			x = x - aceleracao
+			pressA = True
+
 		if pygame.key.get_pressed()[K_w]:
-			y = y - aceleracao
+			pressW = True
+
 		if pygame.key.get_pressed()[K_s]:
-			y = y + aceleracao
+			pressS = True
+####################condição dos controles ativarem
+	if pressD == True:
+		pressA, pressW, pressS = False, False, False
+		x = x + aceleracao
+	if pressA == True:
+		pressD, pressW, pressS = False, False, False
+		x = x - aceleracao
+	if pressW == True:
+		pressD, pressA, pressS = False, False, False
+		y = y - aceleracao
+	if pressS == True:
+		pressD, pressW, pressA = False, False, False
+		y = y + aceleracao
 
-
-
+######################################################
 	if ry>= 1360:
 		ry = 0
 		RX, RY = RX+randint(-20,20), RY+randint(-40,50)
