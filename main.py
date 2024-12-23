@@ -340,7 +340,7 @@ while True:
 		pressD, pressA, pressS = False, False, False
 		y = y - aceleracao
 	if pressS == True:
-		pressD, pressW, pressA = False, False, False
+		pressW, pressA, pressSpressD = False, False, False, False
 		y = y + aceleracao
 
 ######################################################
