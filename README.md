@@ -1,2 +1,2 @@
 # Rect_Game
- Jogo baseado no jogo da cobrinha com o tema de whatsapp, feito na linguagem python utilizando a biblioteca pygame.
+ Game based on the snake game with a WhatsApp theme, made in the Python language using the pygame library.
