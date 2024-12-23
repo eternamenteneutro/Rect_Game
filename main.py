@@ -1,27 +1,29 @@
-#"Rect" game (adaptação do jogo da cobrinha)
-#dimensoes feitas para formato de celular e não de computador:)
 
-#usamos a biblioteca do pygame para a produção
+'''corrija:
+	*As msicas do nivel 1 e game over
+	*a velocidade do jogador
+	*a forma de input dos controles
+	*o som de quando vc encosta no inimigo'''
+#"Rect" game (adaptação do jogo da cobrinha)
 import pygame
 from pygame.locals import *
 from sys import exit
 from random import randint
-
 pygame.init()
 
 #informacoes dos textos que serao inseridos no jogo
 fonte = pygame.font.SysFont('arial', 30, True, False)
 fonte2 = pygame.font.SysFont('arial', 100, True, False)
 
-pontos = 0
-
 #parametros para o tamanho da tela
 largura = 1280
 altura = 720
 escala = 2
 tempo = pygame.time.Clock()
-FPS = 60
-
+FPS = 30
+nivel = 0
+pontos = 0
+letra = 15
 #posicao do bloco do jogador
 x = largura/2
 y = altura/2
@@ -34,8 +36,6 @@ txt_r,txt_g,txt_b = 255,000,255
 #coordenadas dos elementos
 tx, ty = 40, 40
 rx, ry = randint(10,1000), randint(10,600)
-
-dez=10
 RX, RY = randint(0,1000), randint(0,600)
 inmg_largura, inmg_altura = 64, 72
 RX2, RY2 = randint(0,1000), randint(0,600)
@@ -44,30 +44,34 @@ rd, re, rc, rb=0, 0, 0, 0
 rf, gf, bf, rl = 255,255,255, 0
 
 pressD, pressA, pressW, pressS = False, False, False, False
-nivel = 0
 damage = 1
 aceleracao = 0
 vel=5
 comido=False
 var = 20
-musica2 = "sounds/fundo2.mp3"
-musica = "sounds/fundo.mp3"
+musica = ["sounds/gameoversound.mp3", "sounds/fundo.mp3", "sounds/fundo2.mp3", "sounds/fundo3.mp3"]
 tela = pygame.display.set_mode((largura,altura))
 
 width = tela.get_width()
 height = tela.get_height()
 
-#speed = [4, 4]
-
-
 #reprodução da musica
-pygame.mixer.music.load(musica)
-pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.2)
 
 ######################################################################
 while True:
-	
+	while pressD:
+		pressW, pressA, pressS, pressD = False, False, False, False
+		x = x + aceleracao
+	while pressA:
+		pressW, pressA, pressS, pressD = False, False, False, False
+		x = x - aceleracao
+	while pressW:
+		pressW, pressA, pressS, pressD = False, False, False, False
+		y = y - aceleracao
+	while pressS:
+		pressW, pressA, pressS, pressD = False, False, False, False
+		y = y + aceleracao
+
 	#frames por segundo da animação
 	tempo.tick(FPS)
 	aceleracao=5
@@ -93,10 +97,10 @@ while True:
 	control_left = fonte.render(ct_left, False, (yelo,yelo,0))
 			
 			
-	direita= pygame.draw.circle(tela, (rd,0,0), (750,1750), 80)
-	esquerda= pygame.draw.circle(tela, (re,0,0), (450,1750), 80)
-	cima= pygame.draw.circle(tela, (rc,0,0), (600,1600), 80)
-	baixo= pygame.draw.circle(tela, (rb,0,0), (600,1900), 80)
+	direita= pygame.draw.circle(tela, (rd,0,0), (1200,300), 30)
+	esquerda= pygame.draw.circle(tela, (re,0,0), (1100,300), 30)
+	cima= pygame.draw.circle(tela, (rc,0,0), (1150,250), 30)
+	baixo= pygame.draw.circle(tela, (rb,0,0), (1150,350), 30)
 	
 	
 	#linha que separa a tela dos objetos com a tela dos controles
@@ -137,35 +141,32 @@ while True:
 	
 #############################################################################
 	#fases
-	if pontos <-300:
-		pygame.mixer.music.stop()
-		pygame.mixer.music.load(musica)
+	if pontos < 5 and nivel == 0:
+		pygame.mixer.music.load(musica[1])
 		pygame.mixer.music.play(-1)
-		pygame.mixer.music.set_volume(0.2)
-		pontos =0
-	if nivel == 0:
+		pygame.mixer.music.set_volume(0.5)
 		rf,gf,bf = 255, 255, 255
 		yelo = 255
 		txt_r,txt_g,txt_b =255,0,255
-		#gameoversound
 		
 		
-	if pontos>=10 and nivel ==0:
+	if pontos>=5 and nivel ==0:
 		nivel=nivel+1
 		pontos = 0
 		pygame.mixer.music.stop()
-		pygame.mixer.music.load("sounds/fundo2.mp3")
+		pygame.mixer.music.load(musica[2])
 		pygame.mixer.music.play(-1)
-		pygame.mixer.music.set_volume(0.2)
+		pygame.mixer.music.set_volume(0.5)
 		
-	if pontos>=20 and nivel ==1:
+	if pontos>=5 and nivel ==1:
 		nivel = nivel+1
+		pontos = 0
 		pygame.mixer.music.stop()
-		pygame.mixer.music.load("sounds/fundo3.mp3")
+		pygame.mixer.music.load(musica[3])
 		pygame.mixer.music.play(-1)
-		pygame.mixer.music.set_volume(0.3)
+		pygame.mixer.music.set_volume(0.5)
 		
-	if pontos ==50 and nivel ==2:
+	if pontos ==5 and nivel ==2:
 		fonte_gw = pygame.font.SysFont('arial', 100, True, False)
 		pygame.mixer.music.stop()
 		nivel = 3
@@ -221,6 +222,11 @@ while True:
 	if pontos < 0:
 		pontos = -301
 		nivel = -1
+		pygame.mixer.music.stop()
+		pygame.mixer.music.load(musica[0])
+		pygame.mixer.music.play(1)
+		pygame.mixer.music.set_volume(1)
+
 
 ###############################################################################
 					
@@ -239,109 +245,86 @@ while True:
 		tela.blit(texto_gw, (largura/2-300, altura/2-300))
 		tela.blit(texto_sgw, (largura/2-300, altura/2-150))
 	#tela de game over
-	if nivel ==-1:
-		gameover = pygame.mixer.music
-		gameover.load("sounds/gameoversound.mp3")
-		gameover.play()
-		gameover.set_volume(1)
+	if nivel == -1:
 		x,y,rx,ry,RX,RY,RX2,RY2 = 0,0,900,0,900,900,0,900
 		rf,gf,bf = 0,0,0
 		txt_r,txt_g,txt_b = 0,0,0
 		yelo = 0
 		go = f'GAME OVER!'
-		
 		#para reiniciar o jogo
 		reinit = f'press "A" to restart'
 		texto_reinit = fonte.render(reinit, True, (255,0,0))
 		texto_formato = fonte2.render(go, True, (255,0,0))
 		tela.blit(texto_formato, (largura/2 - 300,altura/2 -150))
-		tela.blit(texto_reinit, (largura/2 -300, altura/2))
+		tela.blit(texto_reinit, (largura/2 -120, altura/2))
 		
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
 				if event.key == K_a:
 					nivel = 0
 					pontos = 0
-					pygame.mixer.music.load(musica)
-					pygame.mixer.music.play(-1)
+					rx, ry = randint(10, 1000), randint(10, 600)
+					RX, RY = randint(0, 1000), randint(0, 600)
+					'''pygame.mixer.music.load(musica[1])
+					pygame.mixer.music.play(1)
+					pygame.mixer.music.set_volume(0.8)'''
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				if cima.collidepoint(event.pos):
 					nivel = 0
 					pontos =0
+					rx, ry = randint(10, 1000), randint(10, 600)
+					RX, RY = randint(0, 1000), randint(0, 600)
+					pygame.mixer.music.load(musica[1])
+					pygame.mixer.music.play(-1)
 
 		
-	#Controls movement
+	#controles de movimento
 	for event in pygame.event.get():
 	#CLIQUES
 		if event.type == pygame.MOUSEBUTTONDOWN:
 	
 			if direita.collidepoint(event.pos):
-				x=x+aceleracao
+				pressD = True
 				
 					
 			if esquerda.collidepoint(event.pos):
-				x=x-aceleracao
+				pressA = True
 				
 				
 			if cima.collidepoint(event.pos):
-				y=y-aceleracao
+				pressW = True
 				
 			
 			if baixo.collidepoint(event.pos):
-				y=y+aceleracao
+				pressS = True
 
 
 	#TECLADO
-		'''if event.type == pygame.KEYDOWN:
-
-			if event.key == K_d or event.key == K_RIGHT:
-				KD = True
-				KA,KW,KS = False, False, False
-				while KD:
-					x = x + aceleracao
-
-			if event.key == K_a or event.key == K_LEFT:
-				KA = True
-				KD,KW,KS = False, False, False
-				while KA:
-					x = x - aceleracao
-
-			if event.key == K_w or event.key == K_UP:
-				KW = True
-				KA,KD,KS = False, False, False
-				while KW:
-					y = y - aceleracao
-
-			if event.key == K_s or event.key == K_DOWN:
-			KS = True
-				KA,KW,KS = False, False, False
-				while KS:
-					y = y + aceleracao'''
-		if pygame.key.get_pressed()[K_d]:
+		if pygame.key.get_pressed()[K_d] or pygame.key.get_pressed()[K_RIGHT]:
 			pressD = True
 
-		if pygame.key.get_pressed()[K_a]:
+		if pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_LEFT]:
 			pressA = True
 
-		if pygame.key.get_pressed()[K_w]:
+		if pygame.key.get_pressed()[K_w] or pygame.key.get_pressed()[K_UP]:
 			pressW = True
 
-		if pygame.key.get_pressed()[K_s]:
+		if pygame.key.get_pressed()[K_s] or pygame.key.get_pressed()[K_DOWN]:
 			pressS = True
 ####################condição dos controles ativarem
-	if pressD == True:
-		pressA, pressW, pressS = False, False, False
+	'''while pressD:
+		pressW, pressA, pressS, pressD = False, False, False, False
 		x = x + aceleracao
-	if pressA == True:
-		pressD, pressW, pressS = False, False, False
+	while pressA:
+		pressW, pressA, pressS, pressD = False, False, False, False
 		x = x - aceleracao
-	if pressW == True:
-		pressD, pressA, pressS = False, False, False
+	while pressW:
+		pressW, pressA, pressS, pressD = False, False, False, False
 		y = y - aceleracao
-	if pressS == True:
-		pressW, pressA, pressSpressD = False, False, False, False
-		y = y + aceleracao
+	while pressS:
+		pressW, pressA, pressS, pressD = False, False, False, False
+		y = y + aceleracao'''
 
 ######################################################
 	if ry>= 1360:
@@ -373,13 +356,13 @@ while True:
 		RX = RX+randint(-var,var)
 		RY = RY+randint(-var,var)
 		
-		
+
 	#mostra os objetos na tela
-	tela.blit(control_up, (580,1570))
-	tela.blit(control_right, (735,1720))
-	tela.blit(control_down, (580,1875))
-	tela.blit(control_left, (435,1725))
-	tela.blit(texto_form, (740,60))
+	tela.blit(control_right, (1200-letra,300-letra))
+	tela.blit(control_left, (1100-letra,300-letra))
+	tela.blit(control_up, (1150-letra,250-letra))
+	tela.blit(control_down, (1150-letra,350-letra))
+	tela.blit(texto_form, (1080,45))
 	pygame.display.flip()
 	
 	
